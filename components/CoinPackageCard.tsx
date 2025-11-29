@@ -16,18 +16,18 @@ const CoinPackageCard: React.FC<CoinPackageCardProps> = ({ packageInfo, isSelect
 
   return (
     <div
-      className={`bg-gray-50 rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${borderClass} hover:shadow-md`}
+      className={`bg-gray-50 rounded-lg p-2 md:p-4 text-center cursor-pointer transition-all duration-200 ${borderClass} hover:shadow-md`}
       onClick={() => onSelect(id)}
     >
       {isCustom ? (
-        <p className="text-lg font-bold text-gray-800 h-12 flex items-center justify-center">Custom</p>
+        <p className="text-base md:text-lg font-bold text-gray-800 h-12 flex items-center justify-center">Custom</p>
       ) : (
         <>
           <div className="flex items-center justify-center mb-1">
-            <CoinIcon className="w-6 h-6 text-yellow-500 mr-1" />
-            <span className="text-xl font-bold text-gray-900">{coins}</span>
+            <CoinIcon className="w-5 h-5 md:w-6 md:h-6 text-yellow-500 mr-1" />
+            <span className="text-lg md:text-xl font-bold text-gray-900">{coins}</span>
           </div>
-          <span className="text-sm text-gray-500">${price.toFixed(2)}</span>
+          <span className="text-xs md:text-sm text-gray-500">${price.toFixed(2)}</span>
         </>
       )}
     </div>

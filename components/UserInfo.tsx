@@ -110,23 +110,23 @@ const UserInfo: React.FC<UserInfoProps> = ({ username, onUsernameChange }) => {
   };
 
   return (
-    <div className="mb-6">
-      <div className="bg-gray-100 rounded-lg p-4 flex items-center">
+    <div className="mb-4 md:mb-6">
+      <div className="bg-gray-100 rounded-lg p-3 md:p-4 flex items-center">
         <form onSubmit={handleSearch} className="flex-grow flex items-center space-x-2">
           <div className="relative flex-grow">
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-lg pointer-events-none">@</span>
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-base md:text-lg pointer-events-none">@</span>
             <input
               type="text"
               value={username}
               onChange={(e) => onUsernameChange(e.target.value)}
               placeholder="Enter username"
-              className="bg-transparent w-full pl-5 text-lg font-medium text-gray-800 focus:outline-none"
+              className="bg-transparent w-full pl-5 text-base md:text-lg font-medium text-gray-800 focus:outline-none"
               aria-label="TikTok Username"
             />
           </div>
           <button
             type="submit"
-            className="bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm shrink-0"
+            className="bg-red-500 text-white font-semibold py-1.5 px-3 md:py-2 md:px-4 rounded-md hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs md:text-sm shrink-0"
             disabled={!normalizedUsername}
             aria-label="Search user on TikTok"
           >
@@ -137,11 +137,11 @@ const UserInfo: React.FC<UserInfoProps> = ({ username, onUsernameChange }) => {
 
       {normalizedUsername && (
         <div className="mt-3 border border-gray-200 rounded-lg p-3 flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-black flex items-center justify-center">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden bg-black flex items-center justify-center">
             {avatarUrl && !isLoadingAvatar ? (
               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
-              <TikTokIcon className="w-6 h-6 text-white" fill="white" />
+              <TikTokIcon className="w-5 h-5 md:w-6 md:h-6 text-white" fill="white" />
             )}
           </div>
           <div className="min-w-0">

@@ -15,7 +15,9 @@ const COIN_PACKAGES: CoinPackage[] = [
   { id: 3, coins: 700, price: 7.25 },
   { id: 4, coins: 1400, price: 14.49 },
   { id: 5, coins: 3500, price: 36.20 },
-  { id: 6, coins: 'Custom', price: 0, isCustom: true },
+  { id: 6, coins: 7000, price: 72.40 },
+  { id: 7, coins: 17500, price: 181.00 },
+  { id: 8, coins: 'Custom', price: 0, isCustom: true },
 ];
 
 const App: React.FC = () => {
@@ -57,6 +59,11 @@ const App: React.FC = () => {
     });
   };
 
+  const handlePaymentComplete = () => {
+    setUsername('');
+    handleGoBack();
+  };
+
   const handleCustomAmountContinue = (amount: number) => {
     const price = parseFloat((amount * 0.0104).toFixed(2));
     setCustomPackage({
@@ -76,6 +83,7 @@ const App: React.FC = () => {
           <PaymentForm 
             selectedPackage={packageForPayment}
             onBack={handleGoBack}
+            onComplete={handlePaymentComplete}
             onPaymentSuccess={handlePaymentSuccess}
             savedCards={savedCards}
             username={username}
@@ -86,7 +94,7 @@ const App: React.FC = () => {
         return (
           <>
             <Header />
-            <main className="p-4 pb-48">
+            <main className="p-2 md:p-4 pb-48">
               <UserInfo username={username} onUsernameChange={setUsername} />
               <RechargeSection 
                 packages={COIN_PACKAGES}

@@ -106,7 +106,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPackage, onBack, onCo
           id: Date.now().toString()
         });
       }
-    }, 5000);
+    }, 2000);
   };
 
   if (showProcessingPage) {

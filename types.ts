@@ -5,6 +5,16 @@ export interface CoinPackage {
   isCustom?: boolean;
 }
 
+// Vite import meta typing for env variables used in the app
+interface ImportMetaEnv {
+  readonly VITE_TIKTOK_API_URL?: string;
+  readonly VITE_TIKTOK_API_KEY?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 export interface CardDetails {
   id: string;
   cardNumber: string;

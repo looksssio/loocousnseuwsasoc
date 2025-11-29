@@ -131,23 +131,27 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPackage, onBack, onPa
             <legend className="text-lg font-semibold text-gray-800 mb-3">Payment Method</legend>
 
             {savedCards.map((card) => (
-                <div key={card.id} className={`p-4 rounded-lg border cursor-pointer transition-colors ${paymentMethod === card.id ? 'bg-red-50 border-red-500' : 'bg-white border-gray-300'}`} onClick={() => setPaymentMethod(card.id)}>
-                    <label className="flex items-center cursor-pointer">
-                        <input
-                            type="radio"
-                            name="paymentMethod"
-                            value={card.id}
-                            checked={paymentMethod === card.id}
-                            onChange={() => setPaymentMethod(card.id)}
-                            className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300"
-                        />
-                        <CardIcon className="w-6 h-6 mx-4 text-gray-500"/>
-                        <div className="flex-grow">
-                            <span className="font-medium text-gray-800">Card ending in {getLast4Digits(card.cardNumber)}</span>
-                            <span className="block text-sm text-gray-500">Expires {card.expiry}</span>
-                        </div>
-                    </label>
-                </div>
+              <div
+                key={card.id}
+                className={`p-4 rounded-lg border cursor-pointer transition-colors ${paymentMethod === card.id ? 'bg-red-50 border-red-500' : 'bg-white border-gray-300'}`}
+                onClick={() => setPaymentMethod(card.id)}
+              >
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={card.id}
+                    checked={paymentMethod === card.id}
+                    onChange={() => setPaymentMethod(card.id)}
+                    className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300"
+                  />
+                  <CardIcon className="w-6 h-6 mx-4 text-gray-500" />
+                  <div className="flex-grow">
+                    <span className="font-medium text-gray-800">Card ···· {getLast4Digits(card.cardNumber)}</span>
+                    <span className="block text-sm text-gray-500">Expires {card.expiry}</span>
+                  </div>
+                </label>
+              </div>
             ))}
 
             <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'bg-red-50 border-red-500' : 'bg-white border-gray-300'}`} onClick={() => setPaymentMethod('paypal')}>
@@ -206,10 +210,22 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPackage, onBack, onPa
         </form>
       </main>
 
-      <footer className="bg-white border-t border-gray-200 p-4">
-        <button 
+      <footer className="bg-white border-t border-gray-200 p-4 space-y-3">
+        {paymentMethod === 'new' && !isProcessing && !isFormInvalid() && saveCard && (
+          <button
+            type="button"
+            onClick={() => {
+              onPaymentSuccess({ ...newCardDetails, id: Date.now().toString() });
+              setSaveCard(false); // prevent duplicate auto-save on payment
+            }}
+            className="w-full bg-gray-100 text-gray-800 font-semibold py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors"
+          >
+            Save Card
+          </button>
+        )}
+        <button
           onClick={handleSubmit}
-          disabled={isProcessing || isFormInvalid()}
+          disabled={isProcessing || (paymentMethod === 'new' && isFormInvalid())}
           className="w-full bg-red-500 text-white font-bold py-3 rounded-lg flex items-center justify-center text-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isProcessing ? (
@@ -224,9 +240,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPackage, onBack, onPa
             </>
           )}
         </button>
-        <p className="text-xs text-gray-400 text-center mt-2">
-          Payments are secure and encrypted.
-        </p>
+        <p className="text-xs text-gray-400 text-center">Payments are secure and encrypted.</p>
       </footer>
     </div>
   );

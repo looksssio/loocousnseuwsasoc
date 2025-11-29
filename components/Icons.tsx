@@ -8,11 +8,19 @@ export const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 // From CoinPackageCard.tsx
-export const CoinIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zM9.344 7.23a.75.75 0 00-1.06 1.06l4.25 4.25a.75.75 0 001.06-1.06l-4.25-4.25z" clipRule="evenodd" />
-    <path fillRule="evenodd" d="M12.53 15.03a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 011.06-1.06l4.25 4.25a.75.75 0 010 1.06z" clipRule="evenodd" />
-  </svg>
+export const CoinIcon = (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+  <img 
+    src="https://tiktok-project-get-coins.vercel.app/assets/coin-tiktok-BBusIcSw.png" 
+    alt="Coin"
+    {...props}
+    // We put the style AFTER props to ensure width/height overrides any incoming styles
+    style={{ 
+       width: '25px', 
+       height: '25px',
+       objectFit: 'contain', // Keeps the coin aspect ratio correct
+       ...props.style 
+    }} 
+  />
 );
 
 // From RechargeSection.tsx

@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { ArrowLeftIcon, CoinIcon } from './Icons';
 
@@ -8,6 +9,7 @@ interface CustomAmountFormProps {
 
 const COIN_PRICE_RATE = 0.0104;
 const QUICK_AMOUNTS = [100, 500, 1000, 5000];
+const KEYPAD_DIGITS = ['1','2','3','4','5','6','7','8','9'];
 const MIN_AMOUNT = 1;
 const MAX_AMOUNT = 100000;
 
@@ -46,64 +48,88 @@ const CustomAmountForm: React.FC<CustomAmountFormProps> = ({ onBack, onContinue 
 
   const isContinueDisabled = isNaN(numericAmount) || numericAmount < MIN_AMOUNT;
 
-  return (
-    <div className="h-screen flex flex-col">
-      <header className="sticky top-0 bg-white z-10 border-b border-gray-200">
-        <div className="max-w-md mx-auto h-14 flex items-center justify-center relative">
-          <button onClick={onBack} className="absolute left-4 p-2">
-            <ArrowLeftIcon className="w-6 h-6 text-gray-600" />
-          </button>
-          <h1 className="text-lg font-semibold text-gray-800">Custom Amount</h1>
-        </div>
-      </header>
-      
-      <main className="flex-grow p-4 overflow-y-auto flex flex-col items-center">
-        <div className="w-full max-w-sm">
-            <div className="text-center my-8">
-                <p className="text-gray-600 mb-2">Enter number of coins</p>
-                <div className="relative">
-                    <CoinIcon className="w-8 h-8 text-yellow-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input 
-                        type="tel"
-                        value={amount}
-                        onChange={handleAmountChange}
-                        placeholder="e.g. 1000"
-                        className="w-full text-center text-4xl font-bold p-4 pl-12 border-b-2 border-gray-300 focus:border-red-500 outline-none transition-colors"
-                        autoFocus
-                    />
-                </div>
-                <p className="text-gray-800 font-semibold text-lg mt-4">
-                    Price: ${calculatedPrice}
-                </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 my-6">
-                {QUICK_AMOUNTS.map(quickAmount => (
-                    <button
-                        key={quickAmount}
-                        onClick={() => handleQuickAmountClick(quickAmount)}
-                        className="bg-gray-100 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                        {quickAmount.toLocaleString()}
-                    </button>
-                ))}
-            </div>
+  const handleKeypadInput = (val: string) => {
+    if (val === 'DEL') {
+      setAmount(prev => prev.slice(0, -1));
+      return;
+    }
+    if (val === '000') {
+      const next = amount + '000';
+      applyKeypadValue(next);
+      return;
+    }
+    const next = amount + val;
+    applyKeypadValue(next);
+  };
 
-             <div className="text-xs text-gray-500 text-center">
-                Min: {MIN_AMOUNT.toLocaleString()} coins, Max: {MAX_AMOUNT.toLocaleString()} coins.
+  const applyKeypadValue = (next: string) => {
+    const sanitized = next.replace(/[^0-9]/g, '');
+    if (sanitized === '') {
+      setAmount('');
+      return;
+    }
+    const numValue = parseInt(sanitized, 10);
+    if (numValue <= MAX_AMOUNT) {
+      setAmount(String(numValue));
+    } else {
+      setAmount(String(MAX_AMOUNT));
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-40 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onBack} />
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-auto p-4 max-[500px]:w-[90%] max-[500px]:p-4">
+        <button onClick={onBack} className="absolute left-4 top-4 p-2" aria-label="Close custom amount modal">
+          <ArrowLeftIcon className="w-6 h-6 text-gray-600" />
+        </button>
+        <h1 className="text-lg font-semibold text-center mt-2 mb-4">Custom Amount</h1>
+        <div className="text-center mb-6">
+          <p className="text-gray-600 mb-2">Number of Coins</p>
+          <div className="relative">
+            <CoinIcon className="w-7 h-7 text-yellow-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="w-full text-center text-3xl font-bold py-3 px-3 border border-gray-200 rounded-md select-none bg-gray-50">
+              {amount || '0'}
             </div>
+          </div>
+          <p className="text-gray-800 font-semibold text-base mt-4">Total: ${calculatedPrice}</p>
+          <p className="text-[11px] text-gray-500 mt-1">Min {MIN_AMOUNT} • Max {MAX_AMOUNT} coins</p>
         </div>
-      </main>
-      
-      <footer className="bg-white border-t border-gray-200 p-4">
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          {KEYPAD_DIGITS.map(d => (
+            <button
+              key={d}
+              onClick={() => handleKeypadInput(d)}
+              className="h-12 bg-gray-100 hover:bg-gray-200 rounded-md font-semibold text-gray-800"
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <button onClick={() => handleKeypadInput('000')} className="h-12 bg-gray-100 hover:bg-gray-200 rounded-md font-semibold text-gray-800">000</button>
+          <button onClick={() => handleKeypadInput('0')} className="h-12 bg-gray-100 hover:bg-gray-200 rounded-md font-semibold text-gray-800">0</button>
+          <button onClick={() => handleKeypadInput('DEL')} className="h-12 bg-gray-100 hover:bg-gray-200 rounded-md font-semibold text-gray-800">⌫</button>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          {QUICK_AMOUNTS.map(q => (
+            <button
+              key={q}
+              onClick={() => setAmount(String(q))}
+              className="h-10 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-md text-sm font-medium text-gray-700"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
         <button
           onClick={handleContinue}
           disabled={isContinueDisabled}
           className="w-full bg-red-500 text-white font-bold py-3 rounded-lg text-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Continue
+          Recharge
         </button>
-      </footer>
+      </div>
     </div>
   );
 };

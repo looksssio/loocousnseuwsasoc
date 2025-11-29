@@ -21,7 +21,7 @@ const COIN_PACKAGES: CoinPackage[] = [
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [view, setView] = useState<'main' | 'payment' | 'customAmount'>('main');
+  const [view, setView] = useState<'main' | 'payment'>('main');
   const [selectedPackageId, setSelectedPackageId] = useState<number>(COIN_PACKAGES[0].id);
   const [savedCards, setSavedCards] = useState<CardDetails[]>([]);
   const [customPackage, setCustomPackage] = useState<CoinPackage | null>(null);
@@ -33,9 +33,12 @@ const App: React.FC = () => {
     setIsAuthenticated(true);
   };
 
+  const [showCustomModal, setShowCustomModal] = useState(false);
+
   const handleGoToPayment = () => {
     if (selectedPackageFromList.isCustom) {
-      setView('customAmount');
+      // Open custom amount modal overlay instead of changing main view
+      setShowCustomModal(true);
     } else {
       setCustomPackage(null);
       setView('payment');
@@ -43,7 +46,9 @@ const App: React.FC = () => {
   };
 
   const handleGoBack = () => {
+    // Back from payment or closing custom modal
     setView('main');
+    setShowCustomModal(false);
     setCustomPackage(null);
   };
 
@@ -65,6 +70,7 @@ const App: React.FC = () => {
       price: price,
       isCustom: true,
     });
+    setShowCustomModal(false);
     setView('payment');
   };
   
@@ -77,13 +83,6 @@ const App: React.FC = () => {
             onBack={handleGoBack}
             onPaymentSuccess={handlePaymentSuccess}
             savedCards={savedCards}
-          />
-        );
-      case 'customAmount':
-        return (
-          <CustomAmountForm 
-            onBack={handleGoBack}
-            onContinue={handleCustomAmountContinue}
           />
         );
       case 'main':
@@ -115,7 +114,19 @@ const App: React.FC = () => {
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
       <div className="max-w-md mx-auto bg-white min-h-screen relative">
-        {isAuthenticated ? renderContent() : <Login onLoginSuccess={handleLoginSuccess} />}
+        {isAuthenticated ? (
+          <>
+            {renderContent()}
+            {showCustomModal && (
+              <CustomAmountForm 
+                onBack={handleGoBack}
+                onContinue={handleCustomAmountContinue}
+              />
+            )}
+          </>
+        ) : (
+          <Login onLoginSuccess={handleLoginSuccess} />
+        )}
       </div>
     </div>
   );

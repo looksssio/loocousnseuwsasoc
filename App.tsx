@@ -24,7 +24,14 @@ const App: React.FC = () => {
   const [view, setView] = useState<'main' | 'payment'>('main');
   const [username, setUsername] = useState('');
   const [selectedPackageId, setSelectedPackageId] = useState<number>(COIN_PACKAGES[0].id);
-  const [savedCards, setSavedCards] = useState<CardDetails[]>([]);
+  const [savedCards, setSavedCards] = useState<CardDetails[]>([
+    {
+      id: 'default-card',
+      cardNumber: '4242424242424242',
+      cardName: 'TEST USER',
+      expiry: '12/27'
+    }
+  ]);
   const [customPackage, setCustomPackage] = useState<CoinPackage | null>(null);
 
   const selectedPackageFromList = COIN_PACKAGES.find(p => p.id === selectedPackageId) || COIN_PACKAGES[0];
